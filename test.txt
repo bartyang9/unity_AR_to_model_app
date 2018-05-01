@@ -1,4 +1,4 @@
-size: 169665
+size: 132687
 point step:	12
 name:   x
 offset:   0
@@ -15,4 +15,4 @@ offset:   8
 datatype:   
 count:   1
 next field
-after pc256555
+after pc244229
