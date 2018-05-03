@@ -35,7 +35,8 @@ public class testPC : MetaBehaviour
         GameObject my_real_object = GameObject.Find("realObject");
         GameObject Line = GameObject.Find("Line");
         GameObject arrow = GameObject.Find("TransArrow");
-        GameObject rotLine = GameObject.Find("rotLine");
+        GameObject rotLine1 = GameObject.Find("rotLine1");
+        GameObject rotLine2 = GameObject.Find("rotLine2");
         GameObject text = GameObject.Find("text");
         //var line = my_real_object.AddComponent<LineRenderer>();
         //Transform my_real_object;
@@ -136,7 +137,7 @@ public class testPC : MetaBehaviour
                                 bool inFOV = trans_real.z > 0.12 && trans_real.x <  trans_real.z && trans_real.x > - trans_real.z && trans_real.y <  0.6*trans_real.z && trans_real.y > -0.6 * trans_real.z;
                                 
                                 // continue if the icp position is at good location
-                                if (score < 0.001 && inFOV) //frame_dist< 0.1 && 
+                                if (score < 0.001 && frame_dist < 0.1 && inFOV) // 
                                 {
                                     if (isFirst)
                                     {
@@ -146,7 +147,7 @@ public class testPC : MetaBehaviour
                                         }
                                     }
 
-                                    updateRate = 5;
+                                    updateRate = 10;
                                     // whether curent pose estimation is close to last valid pose
                                     bool close_to_last = (trans_real-real_obj_trans).magnitude < 0.1 && (Quaternion.Dot(real_obj_rot,rot_real)>0.65);//====================
                                     
@@ -165,8 +166,10 @@ public class testPC : MetaBehaviour
 
                                         var line = Line.GetComponent<LineRenderer>();
                                         line.sortingOrder = 1;
-                                        var rotline = rotLine.GetComponent<LineRenderer>();
-                                        rotline.sortingOrder = 1;
+                                        var rotline1 = rotLine1.GetComponent<LineRenderer>();
+                                        rotline1.sortingOrder = 1;
+                                        var rotline2 = rotLine2.GetComponent<LineRenderer>();
+                                        rotline2.sortingOrder = 1;
                                         var myArrow = arrow.GetComponent<LineRenderer>();
                                         myArrow.sortingOrder = 1;
 
@@ -184,6 +187,7 @@ public class testPC : MetaBehaviour
                                         var point2 = myObject.transform.position;
                                         point1.y += 0.05f;
                                         point2.y += 0.05f;
+                                        
                                         Vector3 point3 = Vector3.Lerp(point1, point2, 0.7f);
                                         Vector3 point4 = Vector3.Lerp(point1, point2, 0.9f);
                                         line.positionCount = 2;
@@ -195,7 +199,7 @@ public class testPC : MetaBehaviour
                                             line.material.color = Color.red;
                                             myArrow.material.color = Color.red;
                                         }
-                                        else if (distance_real_to_model > 0.06)
+                                        else if (distance_real_to_model > 0.1)
                                         {
                                             line.material.color = Color.yellow;
                                             myArrow.material.color = Color.yellow;
@@ -216,18 +220,32 @@ public class testPC : MetaBehaviour
                                         line.useWorldSpace = true;
 
                                         // -------------------draw rotational distance -----------------------
+                                        var point1r = point1;
+                                        point1r = point1r- 0.2f * my_real_object.transform.right;
                                         var point2r = point1;
-                                        point2r.y += 0.12f;
-                                        
-                                        rotline.positionCount = 2;
-                                        rotline.SetPosition(0, point1);
-                                        rotline.SetPosition(1, point2r);
-                                        rotline.SetWidth(0.025f, 0.005f);
-                                        rotline.useWorldSpace = true;
+                                        point2r = point2r - 0.2f * myObject.transform.right;
 
-                                        // visualize the distance error
+                                        var visualCo = 2.0f;
+                                        point2r.x += (point2.x - point1.x);// / (point2 - point1).magnitude;
+                                        point2r.y += (point2.y - point1.y);// / (point2 - point1).magnitude;
+                                        point2r.z += (point2.z - point1.z);// / (point2 - point1).magnitude;
+
+                                        rotline1.positionCount = 2;
+                                        rotline1.SetPosition(0, point1);
+                                        rotline1.SetPosition(1, point1r);
+                                        rotline1.SetWidth(0.005f, 0.005f);
+                                        rotline1.useWorldSpace = true;
+                                        rotline1.material.color = Color.white;
+
+                                        rotline2.positionCount = 2;
+                                        rotline2.SetPosition(0, point1);
+                                        rotline2.SetPosition(1, point2r);
+                                        rotline2.SetWidth(0.005f, 0.005f);
+                                        rotline2.useWorldSpace = true;
+                                        rotline2.material.color = Color.yellow;
+                                        // ----------------visualize the distance error---------------------------
                                         var distance_display = (point1 - point2).magnitude;
-                                        countDist.text = "Distance Error: " + distance_display.ToString();
+                                        //countDist.text = "Distance Error: " + distance_display.ToString();
                                         //TextMesh t = text.AddComponent<TextMesh>();
                                         //
                                         //t.text = 
@@ -337,6 +355,10 @@ public class testPC : MetaBehaviour
             {
                 pause2 = true;
             }
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            isFirst = true;
         }
     }
 }
