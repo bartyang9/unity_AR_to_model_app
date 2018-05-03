@@ -38,6 +38,7 @@ public class testPC : MetaBehaviour
         GameObject rotLine1 = GameObject.Find("rotLine1");
         GameObject rotLine2 = GameObject.Find("rotLine2");
         GameObject text = GameObject.Find("text");
+        GameObject success = GameObject.Find("success");
         //var line = my_real_object.AddComponent<LineRenderer>();
         //Transform my_real_object;
 
@@ -235,7 +236,7 @@ public class testPC : MetaBehaviour
                                         rotline1.SetPosition(1, point1r);
                                         rotline1.SetWidth(0.005f, 0.005f);
                                         rotline1.useWorldSpace = true;
-                                        rotline1.material.color = Color.white;
+                                        rotline1.material.color = Color.red;
 
                                         rotline2.positionCount = 2;
                                         rotline2.SetPosition(0, point1);
@@ -244,8 +245,8 @@ public class testPC : MetaBehaviour
                                         rotline2.useWorldSpace = true;
                                         rotline2.material.color = Color.yellow;
                                         // ----------------visualize the distance error---------------------------
-                                        var distance_display = (point1 - point2).magnitude;
-                                        //countDist.text = "Distance Error: " + distance_display.ToString();
+                                        //var distance_display = (point1 - point2).magnitude;
+                                        countDist.text = "Matching Complete";
                                         //TextMesh t = text.AddComponent<TextMesh>();
                                         //
                                         //t.text = 
@@ -253,13 +254,15 @@ public class testPC : MetaBehaviour
                                         //t.transform.localEulerAngles += new Vector3(90, 0, 0);
                                         //var point2text = point2;
                                         //point2text.y += 0.1f;
-                                        //t.transform.localPosition += point2text;
+                                        countDist.transform.position = myObject.transform.position;
 
                                         //==============================visualization end =======================================
-
+                                        if (distance_real_to_model < 0.03 && (Quaternion.Dot(real_obj_rot, rot_real) > 0.85 ) )
+                                        {
+                                            success.transform.position = myObject.transform.position - myObject.transform.right * 0.05f + myObject.transform.up * 0.15f;
+                                        }
                                     }
                                     isFirst = false;
-
                                 }
                                 
                                 prev_frame_trans = trans_real;
